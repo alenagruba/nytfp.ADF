@@ -1,0 +1,6 @@
+{
+	"name": "devmsintegrruntime",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}

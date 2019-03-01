@@ -1,0 +1,105 @@
+{
+	"name": "Data Migration",
+	"properties": {
+		"description": "This pipeline copies CSV files from on-premises to Data Lake Storage, execute Data Cleansing and Data Integration activities as a continuous job",
+		"activities": [
+			{
+				"name": "Copy to Data Lake",
+				"type": "Copy",
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [
+					{
+						"name": "Source",
+						"value": "RawData/"
+					},
+					{
+						"name": "Destination",
+						"value": "Raw Data/"
+					}
+				],
+				"typeProperties": {
+					"source": {
+						"type": "FileSystemSource",
+						"recursive": false
+					},
+					"sink": {
+						"type": "AzureDataLakeStoreSink",
+						"copyBehavior": "MergeFiles"
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "SourceDataset_rrv",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DestinationDataset_rrv",
+						"type": "DatasetReference"
+					}
+				]
+			},
+			{
+				"name": "Data Cleansing",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Copy to Data Lake",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"notebookPath": "/Users/alenagruba777@gmail.com/Pipelines/700 - Data Cleansing"
+				},
+				"linkedServiceName": {
+					"referenceName": "ADBLinkedService",
+					"type": "LinkedServiceReference"
+				}
+			},
+			{
+				"name": "Load to DWH",
+				"type": "DatabricksNotebook",
+				"dependsOn": [
+					{
+						"activity": "Data Cleansing",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"typeProperties": {
+					"notebookPath": "/Users/alenagruba777@gmail.com/Pipelines/800 - Load to DWH"
+				},
+				"linkedServiceName": {
+					"referenceName": "ADBLinkedService",
+					"type": "LinkedServiceReference"
+				}
+			}
+		]
+	},
+	"type": "Microsoft.DataFactory/factories/pipelines"
+}

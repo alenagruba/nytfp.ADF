@@ -1,0 +1,23 @@
+{
+	"name": "RunDataMigration",
+	"properties": {
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "Data Migration",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 5,
+				"startTime": "2019-03-01T08:15:00Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

@@ -1,0 +1,16 @@
+{
+	"name": "OnPremServer",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"type": "FileServer",
+		"typeProperties": {
+			"host": "C:\\Source",
+			"userId": "VMproject",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJiMWQ2NzQ4YS1lMDUwLTQ1YTYtYWQ4Ny00MTQ1YmNmODU5ZDEiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "devmsintegrruntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

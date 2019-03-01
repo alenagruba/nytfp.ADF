@@ -1,0 +1,116 @@
+{
+	"name": "SourceDataset_rrv",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "OnPremServer",
+			"type": "LinkedServiceReference"
+		},
+		"type": "FileShare",
+		"structure": [
+			{
+				"name": "key",
+				"type": "String"
+			},
+			{
+				"name": "fare_amount",
+				"type": "String"
+			},
+			{
+				"name": "pickup_datetime",
+				"type": "String"
+			},
+			{
+				"name": "pickup_longitude",
+				"type": "String"
+			},
+			{
+				"name": "pickup_latitude",
+				"type": "String"
+			},
+			{
+				"name": "dropoff_longitude",
+				"type": "String"
+			},
+			{
+				"name": "dropoff_latitude",
+				"type": "String"
+			},
+			{
+				"name": "passenger_count",
+				"type": "String"
+			},
+			{
+				"name": "PU_place_id",
+				"type": "String"
+			},
+			{
+				"name": "PU_country_code",
+				"type": "String"
+			},
+			{
+				"name": "PU_country",
+				"type": "String"
+			},
+			{
+				"name": "PU_state",
+				"type": "String"
+			},
+			{
+				"name": "PU_city",
+				"type": "String"
+			},
+			{
+				"name": "PU_postcode",
+				"type": "String"
+			},
+			{
+				"name": "PU_display_name",
+				"type": "String"
+			},
+			{
+				"name": "DO_place_id",
+				"type": "String"
+			},
+			{
+				"name": "DO_country_code",
+				"type": "String"
+			},
+			{
+				"name": "DO_country",
+				"type": "String"
+			},
+			{
+				"name": "DO_state",
+				"type": "String"
+			},
+			{
+				"name": "DO_city",
+				"type": "String"
+			},
+			{
+				"name": "DO_postcode",
+				"type": "String"
+			},
+			{
+				"name": "DO_display_name",
+				"type": "String"
+			}
+		],
+		"typeProperties": {
+			"format": {
+				"type": "TextFormat",
+				"columnDelimiter": ",",
+				"rowDelimiter": "\n",
+				"quoteChar": "\"",
+				"nullValue": "\\N",
+				"encodingName": null,
+				"treatEmptyAsNull": true,
+				"skipLineCount": 0,
+				"firstRowAsHeader": true
+			},
+			"fileName": "",
+			"folderPath": "RawData"
+		}
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

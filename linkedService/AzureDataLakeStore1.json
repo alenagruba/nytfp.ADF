@@ -1,0 +1,19 @@
+{
+	"name": "AzureDataLakeStore1",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"type": "AzureDataLakeStore",
+		"typeProperties": {
+			"dataLakeStoreUri": "https://devmsdata.azuredatalakestore.net/webhdfs/v1",
+			"servicePrincipalId": "2d3069bd-70b0-48d4-ac4e-6bc8dd384e79",
+			"tenant": "d6397071-8e3e-45d2-a2d6-36698acf0fea",
+			"subscriptionId": "f78802b9-4646-4cf6-b7f1-6b2ee63219f4",
+			"resourceGroupName": "Alena",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJlMWRkODZkYy05YTdmLTRlZmEtYjEyZS01NDMzMjRlYjY1MDMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "devmsintegrruntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
