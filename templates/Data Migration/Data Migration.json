@@ -1,0 +1,276 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory Name"
+		},
+		"ADBLinkedService": {
+			"type": "string"
+		},
+		"OnPremServer": {
+			"type": "string"
+		},
+		"AzureDataLakeStore1": {
+			"type": "string"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/Data Migration')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "This pipeline copies CSV files from on-premises to Data Lake Storage, execute Data Cleansing and Data Integration activities as a continuous job",
+				"activities": [
+					{
+						"name": "Copy to Data Lake",
+						"type": "Copy",
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [
+							{
+								"name": "Source",
+								"value": "RawData/"
+							},
+							{
+								"name": "Destination",
+								"value": "Raw Data/"
+							}
+						],
+						"typeProperties": {
+							"source": {
+								"type": "FileSystemSource",
+								"recursive": false
+							},
+							"sink": {
+								"type": "AzureDataLakeStoreSink",
+								"copyBehavior": "MergeFiles"
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "SourceDataset_rrv",
+								"type": "DatasetReference"
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DestinationDataset_rrv",
+								"type": "DatasetReference"
+							}
+						]
+					},
+					{
+						"name": "Data Cleansing",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Copy to Data Lake",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"notebookPath": "/Users/alenagruba777@gmail.com/Pipelines/700 - Data Cleansing"
+						},
+						"linkedServiceName": {
+							"referenceName": "[parameters('ADBLinkedService')]",
+							"type": "LinkedServiceReference"
+						}
+					},
+					{
+						"name": "Load to DWH",
+						"type": "DatabricksNotebook",
+						"dependsOn": [
+							{
+								"activity": "Data Cleansing",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"typeProperties": {
+							"notebookPath": "/Users/alenagruba777@gmail.com/Pipelines/800 - Load to DWH"
+						},
+						"linkedServiceName": {
+							"referenceName": "[parameters('ADBLinkedService')]",
+							"type": "LinkedServiceReference"
+						}
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SourceDataset_rrv')]",
+				"[concat(variables('factoryId'), '/datasets/DestinationDataset_rrv')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SourceDataset_rrv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('OnPremServer')]",
+					"type": "LinkedServiceReference"
+				},
+				"type": "FileShare",
+				"structure": [
+					{
+						"name": "key",
+						"type": "String"
+					},
+					{
+						"name": "fare_amount",
+						"type": "String"
+					},
+					{
+						"name": "pickup_datetime",
+						"type": "String"
+					},
+					{
+						"name": "pickup_longitude",
+						"type": "String"
+					},
+					{
+						"name": "pickup_latitude",
+						"type": "String"
+					},
+					{
+						"name": "dropoff_longitude",
+						"type": "String"
+					},
+					{
+						"name": "dropoff_latitude",
+						"type": "String"
+					},
+					{
+						"name": "passenger_count",
+						"type": "String"
+					},
+					{
+						"name": "PU_place_id",
+						"type": "String"
+					},
+					{
+						"name": "PU_country_code",
+						"type": "String"
+					},
+					{
+						"name": "PU_country",
+						"type": "String"
+					},
+					{
+						"name": "PU_state",
+						"type": "String"
+					},
+					{
+						"name": "PU_city",
+						"type": "String"
+					},
+					{
+						"name": "PU_postcode",
+						"type": "String"
+					},
+					{
+						"name": "PU_display_name",
+						"type": "String"
+					},
+					{
+						"name": "DO_place_id",
+						"type": "String"
+					},
+					{
+						"name": "DO_country_code",
+						"type": "String"
+					},
+					{
+						"name": "DO_country",
+						"type": "String"
+					},
+					{
+						"name": "DO_state",
+						"type": "String"
+					},
+					{
+						"name": "DO_city",
+						"type": "String"
+					},
+					{
+						"name": "DO_postcode",
+						"type": "String"
+					},
+					{
+						"name": "DO_display_name",
+						"type": "String"
+					}
+				],
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "\n",
+						"quoteChar": "\"",
+						"nullValue": "\\N",
+						"encodingName": null,
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": true
+					},
+					"fileName": "",
+					"folderPath": "RawData"
+				}
+			}
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DestinationDataset_rrv')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "[parameters('AzureDataLakeStore1')]",
+					"type": "LinkedServiceReference"
+				},
+				"type": "AzureDataLakeStoreFile",
+				"typeProperties": {
+					"format": {
+						"type": "TextFormat",
+						"columnDelimiter": ",",
+						"rowDelimiter": "",
+						"nullValue": "\\N",
+						"treatEmptyAsNull": true,
+						"skipLineCount": 0,
+						"firstRowAsHeader": true
+					},
+					"fileName": "",
+					"folderPath": "Raw Data"
+				}
+			}
+		}
+	]
+}
